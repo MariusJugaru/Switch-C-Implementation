@@ -1,0 +1,23 @@
+1 2 3
+
+Procesul de comutare
+Pentru procesul de comutare am utilizat un dictionar in care am pastrat adresele mac cu porturile asociate.
+Acest lucru se intampla atunci cand primit un pachet pe o interfata
+Pentru a continua procesul de dirijare exista 3 cazuri:
+- pachetul este trimis catre un singur host si nu se stie adresa mac al acestuia, asa ca il trimitem mai departe urmatorul switch, care la randul lui poate sa trimita catre host sau catre alt switch.
+- pachetul este trimis catre un singur host si este cunoscuta adresa mac si nu o sa fie nevoie de broadcast
+- host-ul nu cunoaste adresa mac a destinatarului asa ca trimite un multicast
+
+VLAN
+Pentru VLAN am folosit de asemenea un dictionar in care am pastrat perechile port, VLAN ID/ 'T'
+Am modificat in procesul de comutare modul in care se trimit datele.
+Daca nu se cunoaste adresa mac a destinatiei se face un broadcast catre hosts din acelasi vlan care sunt legati de acelasi switch.
+De asemenea, se adauga un header pentru vlan care memoreaza vlan-ul de pe care a plecat pachetul si este trimis pe un alt switch care este de tip trunk.
+Daca pachetul este trimis catre hosts, headerul anterior este eliminat. In acest caz am verificat daca exista pe switch-ul respetiv porturi cu VLAN regasit in header si am trimis pachetul doar unde este nevoie.
+
+STP
+Pentru partea de STP am creat pachete de tip BPDU si am folosit inca un dictionar care tine minte state-ul pentru fiecare port. Initial toate switch-urile se considera root asa ca toate o sa trimita astfel de pachete catre celelalte switch-uri.
+In momentul in care un switch realizeaza ca nu este root se opreste din a mai genera pachete BPDU.
+Atunci cand un switch primeste un astfel de tip de pachet verifica daca ramane in continuare root sau nu si daca este nevoie trimite pachetul actualizat mai departe.
+Am facut niste modificari in cei doi pasi anteriori, astfel incat acum pachetele sa fie trimise doar catre porturile designated catre alte switch-uri.
+De asemenea, daca un pachet este primit pe un port BLOCKING acesta este aruncat.
