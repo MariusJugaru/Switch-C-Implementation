@@ -1,4 +1,4 @@
-# Switch C Implementation
+# Switch Python Implementation
 
 ## Overview
 The goal of this project is to model a virtual network's routing procedure. It executes **VLAN**, **STP** (Spanning Tree Protocol), and the **switching** operation.
